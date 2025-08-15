@@ -21,14 +21,18 @@ boot:
     mov sp, 0x7C00
     sti:
 
-.print:
+    mov si, message
+    call print
+
+print:
     lodsb
     cmp al, 0
-    je .done
+    je done
+    mov ah, 0x0E
     int 0x10
-    jmp .print
+    jmp print
 
-.done:
+done:
     ret
 
 message: db "Welcome to FeatherOS", 0
