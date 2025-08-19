@@ -26,13 +26,14 @@ boot:
 ; Load Protected Mode
 .loadProtected:
     cli
-    lgdt[gdtr]
+    lgdt[gdtDescriptor]
     mov eax, cr0
     or eax, 0x1
     mov cr0, eax
     jmp CODE:load32
 
 ; GDT Descriptor
+; Each entry is 8 bytes
 gdtStart:
 gdtNull:
     dd 0x0
@@ -56,28 +57,62 @@ gdtData:
 
 gdtEnd:
 
-gdtr:
+gdtDescriptor:
     dw gdtEnd - gdtStart-1
     dd gdtStart
- 
-; Enter 32-bit protected mode
+
 [BITS 32]
 load32:
-    mov ax, DATA
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    mov ebp, 0x00200000
-    mov esp, ebp
+    mov eax, 1
+    mov ecx, 100
+    mov edi, 0x0100000
+    call ataLbaRead
+    jmp CODE:0x0100000
 
-    ; Enable A20 line
-    in al, 0x92
-    or al, 2
-    out 0x92, al
+ataLbaRead:
+    mov ebx, eax
+    shr eax, 24
+    or eax, 0xE0
+    mov dx, 0x1F6
+    out dx, al
 
-    jmp $
+    mov eax, ecx
+    mov dx, 0x1F2
+    out dx, al
 
-times 510-($ - $$) db 0
+    mov eax, ebx
+    mox dx, 0x1F3
+    out dx, al
+
+    mov dx, 0x1F4
+    mov eax, ebx
+    shr eax, 8
+    out dx, al
+
+    mov dx, 0x1F5
+    mov eax, ebx
+    shr eax, 16
+    out dx, al
+
+    mov dx, 0x1F7
+    mov al, 0x20
+    out dx, al
+
+.nextSector:
+    push ecx
+
+.tryAgain:
+    mov dx, 0x1F7
+    in al, dx
+    test al, 8
+    jz .tryAgain
+
+    mov ecx, 256
+    mov dx, 0x1F0
+    rep insw
+    pop ecx
+    loop .nextSector
+    ret
+
+times 510 - ($ - $$) db 0
 dw 0xAA55
