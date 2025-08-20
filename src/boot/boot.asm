@@ -66,10 +66,10 @@ load32:
     mov eax, 1
     mov ecx, 100
     mov edi, 0x0100000
-    call ataLbaRead
+    call ataRead
     jmp CODE:0x0100000
 
-ataLbaRead:
+ataRead:
     mov ebx, eax
     shr eax, 24
     or eax, 0xE0
@@ -81,7 +81,7 @@ ataLbaRead:
     out dx, al
 
     mov eax, ebx
-    mox dx, 0x1F3
+    mov dx, 0x1F3
     out dx, al
 
     mov dx, 0x1F4
