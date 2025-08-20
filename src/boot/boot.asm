@@ -58,8 +58,8 @@ gdtData:
 gdtEnd:
 
 gdtDescriptor:
-    dw gdtEnd - gdtStart-1
-    dd gdtStart
+    dw gdtEnd - gdtStart - 1    ; Limit 
+    dd gdtStart                 ; Base
 
 [BITS 32]
 load32:
