@@ -1,6 +1,7 @@
 ; Enter 32-bit protected mode
 [BITS 32]
 global _start
+extern kernelStart
 
 CODE equ 0x08
 DATA equ 0x10
@@ -19,6 +20,8 @@ _start:
     in al, 0x92
     or al, 2
     out 0x92, al
+
+    call kernelStart
 
     jmp $
 
