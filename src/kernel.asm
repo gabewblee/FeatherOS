@@ -21,3 +21,4 @@ _start:
     out 0x92, al
 
     jmp $
+    
