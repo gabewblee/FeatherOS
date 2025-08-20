@@ -1,6 +1,7 @@
 ; Enter 32-bit protected mode
 [BITS 32]
 global _start
+extern kernelMain
 
 CODE equ 0x08
 DATA equ 0x10
@@ -20,6 +21,7 @@ _start:
     or al, 2
     out 0x92, al
 
+    call kernelMain
     jmp $
 
 times 512 - ($ - $$) db 0

@@ -1,5 +1,5 @@
 #include "kernel.h"
 
-void kernelStart() {
+void kernelMain() {
     
 }
