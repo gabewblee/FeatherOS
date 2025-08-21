@@ -18,5 +18,6 @@
 #define COLOR 0x0F
 
 void kernelMain();
+void print(const char * str);
 
 #endif

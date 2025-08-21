@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include "idt/idt.h"
 
 static uint16_t * vgaMemory;
 static size_t row;
@@ -35,7 +36,7 @@ static void terminalWrite(const char c) {
     }
 }
 
-static void terminalPrint(const char * str) {
+void print(const char * str) {
     size_t length = strlen(str);
     for (size_t i = 0; i < length; i++) {
         terminalWrite(str[i]);
@@ -55,9 +56,13 @@ static void terminalInitialize() {
         }
     }
 
-    terminalPrint("Welcome to FeatherOS!\n");
+    print("Welcome to FeatherOS!\n");
 }
+
+extern void problem();
 
 void kernelMain() {
     terminalInitialize();
+    idtInitialize();
+    problem();
 }

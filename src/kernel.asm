@@ -1,6 +1,7 @@
 ; Enter 32-bit protected mode
 [BITS 32]
 global _start
+global problem
 extern kernelMain
 
 CODE equ 0x08
@@ -23,5 +24,8 @@ _start:
 
     call kernelMain
     jmp $
+
+problem:
+    int 0
 
 times 512 - ($ - $$) db 0
