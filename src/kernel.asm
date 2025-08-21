@@ -21,8 +21,6 @@ _start:
     or al, 2
     out 0x92, al
 
-    call kernelStart
-
     call kernelMain
     jmp $
 

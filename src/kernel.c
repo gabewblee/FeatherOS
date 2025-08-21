@@ -5,11 +5,11 @@ static size_t row;
 static size_t column;
 static uint8_t color;
 
-uint16_t vgaEntry(const char c) {
+static uint16_t vgaEntry(const char c) {
     return (uint16_t) c | color << 8;
 }
 
-size_t strlen(const char * str) {
+static size_t strlen(const char * str) {
     size_t length = 0;
 
     while (str[length] != '\0') {
@@ -19,7 +19,7 @@ size_t strlen(const char * str) {
     return length;
 } 
 
-void terminalWrite(const char c) {
+static void terminalWrite(const char c) {
     if (c == '\n') {
         row += 1;
         column = 0;
@@ -35,18 +35,18 @@ void terminalWrite(const char c) {
     }
 }
 
-void terminalPrint(const char * str) {
+static void terminalPrint(const char * str) {
     size_t length = strlen(str);
     for (size_t i = 0; i < length; i++) {
         terminalWrite(str[i]);
     }
 }
 
-void terminalInitialize() {
+static void terminalInitialize() {
     vgaMemory = (uint16_t *) CGA;
-    row = 0;
-    column = 0;
-    color = 0x0F;
+    row = ROW;
+    column = COLUMN;
+    color = COLOR;
 
     for (size_t y = 0; y < HEIGHT; y++) {
         for (size_t x = 0; x < WIDTH; x++) {
@@ -55,7 +55,7 @@ void terminalInitialize() {
         }
     }
 
-    terminalPrint("Welcome to FeatherOS!");
+    terminalPrint("Welcome to FeatherOS!\n");
 }
 
 void kernelMain() {
